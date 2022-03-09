@@ -10,12 +10,12 @@ class CustomButton extends StatelessWidget {
   }) : super(key: key);
 
   final String text;
-  final Function onPressed;
+  final Function? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed(),
+      onPressed: onPressed == null ? null : () => onPressed!(),
       child: Center(
         child: Text(text, style: TextStyle(fontSize: 18, color: Colors.white),),
       ),

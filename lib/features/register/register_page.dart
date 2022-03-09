@@ -1,8 +1,11 @@
+import 'package:chat/core/helpers/mostrar_alerta.dart';
 import 'package:chat/core/widgets/custom_input.dart';
+import 'package:chat/datasource/auth_service.dart';
 import 'package:chat/features/login/widgets/labels.dart';
 import 'package:chat/features/login/widgets/logo.dart';
 import 'package:chat/core/widgets/custon_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -24,8 +27,7 @@ class RegisterPage extends StatelessWidget {
                   Labels(
                       ruta: 'login',
                       pregunta: '¿Ya tienes cuenta?',
-                      accion: 'Acceder'
-                  ),
+                      accion: 'Acceder'),
                   Text(
                     'Términos y condiciones de uso',
                     style: TextStyle(fontWeight: FontWeight.w200),
@@ -52,6 +54,8 @@ class _FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: EdgeInsets.only(top: 10),
       padding: EdgeInsets.symmetric(horizontal: 40),
@@ -76,12 +80,25 @@ class _FormState extends State<_Form> {
             textController: passwordController,
             isPassword: true,
           ),
-
           CustomButton(
             text: 'Registrar',
-            onPressed: () {
-              print(emailController.text);
-            },
+            onPressed: authService.autenticando
+                ? null
+                : () async {
+                    print(emailController.text);
+                    final registroOk = await authService.register(
+                        nombreController.text.trim(),
+                        emailController.text.trim(),
+                        passwordController.text.trim()
+                    );
+
+                    if (registroOk == true) {
+
+                    } else {
+                      mostrarAlerta(context, 'Registro incorrecto', registroOk);
+                    }
+
+                  },
           )
         ],
       ),

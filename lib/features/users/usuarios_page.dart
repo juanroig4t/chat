@@ -1,7 +1,9 @@
 
+import 'package:chat/datasource/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:users/domain/user.dart';
+import 'package:users/domain/Usuario.dart';
 
 class UsuariosPage extends StatefulWidget {
   const UsuariosPage({Key? key}) : super(key: key);
@@ -23,14 +25,20 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final authService = Provider.of<AuthService>(context);
+    final usuario = authService.usuario;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mi nombre', style: TextStyle(color: Colors.black54),),
+        title: Text('${usuario.nombre}', style: TextStyle(color: Colors.black54),),
         elevation: 1,
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.exit_to_app, color: Colors.black54,),
-          onPressed: (){},
+          onPressed: (){
+            AuthService.deleteToken();
+            Navigator.of(context).pushReplacementNamed('login');
+          },
         ),
         actions: [
           Container(
@@ -66,17 +74,18 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   ListTile _usuarioListTile(Usuario usuario) {
     return ListTile(
-          title: Text(usuario.nombre),
-          subtitle: Text(usuario.email),
+          title: Text('${usuario.nombre}'),
+          subtitle: Text('${usuario.email}'),
           leading: CircleAvatar(
-            child: Text(usuario.nombre.substring(0,2)),
+            child: Text('${usuario.nombre?.substring(0,2)}'),
             backgroundColor: Colors.blue.shade100,
           ),
           trailing: Container(
             width: 10,
             height: 10,
             decoration: BoxDecoration(
-              color: usuario.online ? Colors.green.shade300 : Colors.red.shade300,
+              color: (usuario.online != null && usuario.online == true)
+                  ? Colors.green.shade300 : Colors.red.shade300,
               borderRadius: BorderRadius.circular(100)
             ),
           ),
