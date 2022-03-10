@@ -21,7 +21,6 @@ class AuthService with ChangeNotifier {
     notifyListeners();
   }
 
-  //Getters staticos
   static Future<String?> getToken() async {
     final _storage = new FlutterSecureStorage();
     final token = await _storage.read(key: 'token');

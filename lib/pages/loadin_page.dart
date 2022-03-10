@@ -5,11 +5,14 @@ import 'package:chat/features/users/usuarios_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../datasource/socket_service.dart';
+
 class LoadingPage extends StatelessWidget {
   const LoadingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: FutureBuilder(
         future: checkLoginState(context),
@@ -23,11 +26,12 @@ class LoadingPage extends StatelessWidget {
 
   Future checkLoginState( BuildContext context) async {
     final authService = Provider.of<AuthService>(context, listen: false);
+    final socketService = Provider.of<SocketService>(context, listen: false);
 
     final autenticado = await authService.isLoggedIn();
     
     if(autenticado) {
-      // Navigator.of(context).pushReplacementNamed('usuarios');
+      socketService.connect();
       Navigator.pushReplacement(context,
           PageRouteBuilder(
             pageBuilder: ( _ , __ , ___) => UsuariosPage(),
@@ -35,7 +39,6 @@ class LoadingPage extends StatelessWidget {
           )
       );
     } else {
-      //Navigator.of(context).pushReplacementNamed('login');
       Navigator.pushReplacement(context,
           PageRouteBuilder(
               pageBuilder: ( _ , __ , ___) => LoginPage(),

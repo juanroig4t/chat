@@ -7,6 +7,8 @@ import 'package:chat/core/widgets/custon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../datasource/socket_service.dart';
+
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -55,6 +57,7 @@ class _FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     return Container(
       margin: EdgeInsets.only(top: 10),
@@ -93,8 +96,8 @@ class _FormState extends State<_Form> {
                     );
 
                     if (registroOk == true) {
-
-                    } else {
+                      socketService.connect()
+;                    } else {
                       mostrarAlerta(context, 'Registro incorrecto', registroOk);
                     }
 
